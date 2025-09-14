@@ -1,7 +1,5 @@
-// Money format (Thai)
+// Money & quote renderer
 const formatMoney = (num) => (num||0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-// Render quote preview HTML (shared)
 const renderQuoteTable = ({ title, subtitle, rows, grand }) => {
   const rowsHtml = rows.map(r=>`
     <tr>
@@ -12,7 +10,6 @@ const renderQuoteTable = ({ title, subtitle, rows, grand }) => {
       <td class="text-end">${formatMoney(r.price||0)}</td>
       <td class="text-end fw-semibold">${formatMoney(r.total||0)}</td>
     </tr>`).join('');
-
   return `
   <div class="p-3">
     <div class="mb-3">

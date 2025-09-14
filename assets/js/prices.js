@@ -1,3 +1,4 @@
+// Prices with optional extra categories
 const DEFAULT_PRICES = {
   pvcPrices: [
     { label: '349 ฉากทึบ', value: 349 },
@@ -8,9 +9,9 @@ const DEFAULT_PRICES = {
   woodBlindPrices: [
     { label: 'ไม้โฟมวู้ด 799', value: 799 },
     { label: 'ไม้บาสวู้ด 820', value: 820 }
-  ]
+  ],
+  extraCategories: []
 };
-
 function getAllPrices(){
   try {
     const raw = localStorage.getItem('pc_prices');
@@ -18,11 +19,11 @@ function getAllPrices(){
     const obj = JSON.parse(raw);
     return {
       pvcPrices: Array.isArray(obj.pvcPrices) && obj.pvcPrices.length ? obj.pvcPrices : DEFAULT_PRICES.pvcPrices,
-      woodBlindPrices: Array.isArray(obj.woodBlindPrices) && obj.woodBlindPrices.length ? obj.woodBlindPrices : DEFAULT_PRICES.woodBlindPrices
+      woodBlindPrices: Array.isArray(obj.woodBlindPrices) && obj.woodBlindPrices.length ? obj.woodBlindPrices : DEFAULT_PRICES.woodBlindPrices,
+      extraCategories: Array.isArray(obj.extraCategories) ? obj.extraCategories : []
     };
   } catch(e){
     return JSON.parse(JSON.stringify(DEFAULT_PRICES));
   }
 }
-
 function saveAllPrices(obj){ localStorage.setItem('pc_prices', JSON.stringify(obj)); }
