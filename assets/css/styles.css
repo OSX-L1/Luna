@@ -51,3 +51,47 @@ body{ background: var(--pc-bg); color: var(--pc-text); }
 .modal-content{ background: var(--pc-surface); color: var(--pc-text); border-radius: 18px; }
 .mt-auto.small, footer { color: var(--pc-muted); }
 .container-fluid .card-body h1,.container-fluid .card-body h2{ letter-spacing: .3px; }
+:root[data-theme="dark"] {
+  --pc-bg: #0b1220;
+  --pc-surface: #1e293b;
+  --pc-text: #f1f5f9;
+  --pc-muted: #94a3b8;
+  --pc-border: #334155;
+  --pc-primary: #60a5fa;
+  --pc-primary-2: #93c5fd;
+  --pc-success: #34d399;
+  --pc-success-2: #86efac;
+  --pc-danger: #f87171;
+  --pc-shadow: 0 10px 30px rgba(0,0,0,.8);
+}
+
+/* input / select ใน dark mode */
+:root[data-theme="dark"] .form-control,
+:root[data-theme="dark"] .form-select {
+  background-color: #0f172a;
+  color: var(--pc-text);
+  border: 1px solid var(--pc-border);
+}
+:root[data-theme="dark"] .form-control::placeholder,
+:root[data-theme="dark"] .form-select option {
+  color: var(--pc-muted);
+}
+
+/* ตารางใน dark mode */
+:root[data-theme="dark"] .table {
+  color: var(--pc-text);
+}
+:root[data-theme="dark"] .table-light th {
+  background-color: #1e293b !important;
+  color: var(--pc-text);
+  border-color: var(--pc-border);
+}
+:root[data-theme="dark"] .table td {
+  border-color: var(--pc-border);
+}
+
+/* โมดัลใน dark mode */
+:root[data-theme="dark"] .modal-content {
+  background-color: #1e293b;
+  color: var(--pc-text);
+}
