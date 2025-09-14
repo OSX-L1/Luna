@@ -14,17 +14,17 @@
   --pc-shadow: 0 10px 30px rgba(2,6,23,.07);
 }
 :root[data-theme="dark"]{
-  --pc-bg: #0b1220;
-  --pc-surface: #111827;
-  --pc-text: #e5e7eb;
-  --pc-muted: #9ca3af;
-  --pc-border: #1f2937;
-  --pc-primary: #60a5fa;
-  --pc-primary-2: #93c5fd;
-  --pc-success: #34d399;
-  --pc-success-2: #86efac;
-  --pc-danger: #f87171;
-  --pc-shadow: 0 10px 30px rgba(0,0,0,.55);
+  --pc-bg: #141b25;         /* softer dark background */
+  --pc-surface: #1f2a38;    /* card/input surface a bit lighter */
+  --pc-text: #eef2f7;       /* brighter text for contrast */
+  --pc-muted: #a7b2c3;
+  --pc-border: #2d3a4b;     /* lighter borders */
+  --pc-primary: #69a7ff;    /* keep brand but slightly brighter */
+  --pc-primary-2: #9cc4ff;
+  --pc-success: #4dd19b;
+  --pc-success-2: #98f0c7;
+  --pc-danger: #ffa0a0;
+  --pc-shadow: 0 10px 30px rgba(0,0,0,.6);
 }
 *{ box-sizing: border-box; }
 body{ background: var(--pc-bg); color: var(--pc-text); }
@@ -51,47 +51,76 @@ body{ background: var(--pc-bg); color: var(--pc-text); }
 .modal-content{ background: var(--pc-surface); color: var(--pc-text); border-radius: 18px; }
 .mt-auto.small, footer { color: var(--pc-muted); }
 .container-fluid .card-body h1,.container-fluid .card-body h2{ letter-spacing: .3px; }
-:root[data-theme="dark"] {
-  --pc-bg: #0b1220;
-  --pc-surface: #1e293b;
-  --pc-text: #f1f5f9;
-  --pc-muted: #94a3b8;
-  --pc-border: #334155;
-  --pc-primary: #60a5fa;
-  --pc-primary-2: #93c5fd;
-  --pc-success: #34d399;
-  --pc-success-2: #86efac;
-  --pc-danger: #f87171;
-  --pc-shadow: 0 10px 30px rgba(0,0,0,.8);
+
+
+/* ===== Strong dark-mode fixes ===== */
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .offcanvas,
+:root[data-theme="dark"] .dropdown-menu {
+  background-color: var(--pc-surface) !important;
+  color: var(--pc-text);
+  border-color: var(--pc-border);
+  box-shadow: var(--pc-shadow);
 }
 
-/* input / select ใน dark mode */
+:root[data-theme="dark"] .form-text { color: var(--pc-muted); }
+
+/* Table core cells */
+:root[data-theme="dark"] .table>:not(caption)>*>* {
+  background-color: var(--pc-surface) !important;
+  color: var(--pc-text) !important;
+  border-color: var(--pc-border) !important;
+}
+
+/* Table header */
+:root[data-theme="dark"] .table thead th,
+:root[data-theme="dark"] .table-light th {
+  background-color: #182230 !important;
+  color: var(--pc-text) !important;
+  border-color: var(--pc-border) !important;
+}
+
+/* Table footer or tfoot, if any */
+:root[data-theme="dark"] .table tfoot th,
+:root[data-theme="dark"] .table tfoot td {
+  background-color: #182230 !important;
+  color: var(--pc-text) !important;
+  border-color: var(--pc-border) !important;
+}
+
+/* Inputs */
 :root[data-theme="dark"] .form-control,
 :root[data-theme="dark"] .form-select {
-  background-color: #0f172a;
-  color: var(--pc-text);
-  border: 1px solid var(--pc-border);
+  background-color: #0f172a !important;
+  color: var(--pc-text) !important;
+  border: 1px solid var(--pc-border) !important;
 }
-:root[data-theme="dark"] .form-control::placeholder,
-:root[data-theme="dark"] .form-select option {
-  color: var(--pc-muted);
+:root[data-theme="dark"] .form-control::placeholder { color: var(--pc-muted); }
+
+/* Buttons outline visibility */
+:root[data-theme="dark"] .btn-outline-primary {
+  color: var(--pc-primary) !important;
+  border-color: var(--pc-primary) !important;
+}
+:root[data-theme="dark"] .btn-outline-primary:hover {
+  background: var(--pc-primary) !important;
+  color: #0b1220 !important;
 }
 
-/* ตารางใน dark mode */
-:root[data-theme="dark"] .table {
-  color: var(--pc-text);
-}
-:root[data-theme="dark"] .table-light th {
-  background-color: #1e293b !important;
-  color: var(--pc-text);
-  border-color: var(--pc-border);
-}
-:root[data-theme="dark"] .table td {
-  border-color: var(--pc-border);
-}
-
-/* โมดัลใน dark mode */
+/* Modal */
 :root[data-theme="dark"] .modal-content {
-  background-color: #1e293b;
-  color: var(--pc-text);
+  background-color: var(--pc-surface) !important;
+  color: var(--pc-text) !important;
+  border-color: var(--pc-border) !important;
 }
+
+/* Horizontal rules */
+:root[data-theme="dark"] hr, 
+:root[data-theme="dark"] .border, 
+:root[data-theme="dark"] .border-top { border-color: var(--pc-border) !important; }
+
+/* Soft-dark specific tweaks */
+:root[data-theme="dark"] .table thead th,
+:root[data-theme="dark"] .table-light th { background-color: #223146 !important; }
+:root[data-theme="dark"] .form-control,
+:root[data-theme="dark"] .form-select { background-color: #172335 !important; }
