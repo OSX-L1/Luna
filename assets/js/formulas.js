@@ -1,4 +1,3 @@
-// Height adjust & formulas
 const adjustPVCHeight = (h) => {
   if (h <= 2.01) return 2.0; if (h <= 2.20 || h === 2.21) return 2.2;
   if (h <= 2.40 || h === 2.41) return 2.4; if (h <= 2.60 || h === 2.61) return 2.6;

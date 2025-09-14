@@ -1,4 +1,3 @@
-// Prices with optional extra categories
 const DEFAULT_PRICES = {
   pvcPrices: [
     { label: '349 ฉากทึบ', value: 349 },
