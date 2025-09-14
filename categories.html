@@ -64,8 +64,8 @@
                     <th style="width:60px">ลำดับ</th>
                     <th>รหัสสินค้า</th>
                     <th style="min-width:160px">เลือกราคา</th>
-                    <th>กว้าง (ม.)</th>
-                    <th>สูง (ม.)</th>
+                    <th>กว้าง (ซม.)</th>
+                    <th>สูง (ซม.)</th>
                     <th>จำนวนชุด</th>
                     <th class="text-end">ราคารวม (บาท)</th>
                   </tr>
@@ -152,8 +152,8 @@
           <small class="text-secondary">หรือใช้ราคาอื่น: </small>
           <input type="number" class="form-control form-control-sm mt-1 customLinePrice" placeholder="ราคาอื่น">
         </td>
-        <td><input type="number" step="0.01" class="form-control form-control-sm wVal" placeholder="เช่น 1.00"></td>
-        <td><input type="number" step="0.01" class="form-control form-control-sm hVal" placeholder="เช่น 2.40"></td>
+        <td><input type="number" step="0.01" class="form-control form-control-sm wVal" placeholder="เช่น 120"></td>
+        <td><input type="number" step="0.01" class="form-control form-control-sm hVal" placeholder="เช่น 200"></td>
         <td><input type="number" class="form-control form-control-sm qtyVal" value="1" min="1"></td>
         <td class="text-end fw-semibold lineTotal">0.00</td>\`;
       tbody.appendChild(tr);
@@ -169,8 +169,10 @@
       const mode = document.querySelector('input[name="mode"]:checked').value;
       let grand = 0;
       [...tbody.querySelectorAll('tr')].forEach(tr => {
-        const w = parseFloat(tr.querySelector('.wVal').value)||0;
-        const hRaw = parseFloat(tr.querySelector('.hVal').value)||0;
+        const w_cm = parseFloat(tr.querySelector('.wVal').value)||0;
+        const w = w_cm/100;
+        const h_cm_raw = parseFloat(tr.querySelector('.hVal').value)||0;
+        const hRaw = h_cm_raw/100;
         const qty = parseInt(tr.querySelector('.qtyVal').value)||0;
         const sel = parseFloat(tr.querySelector('.priceSel').value)||0;
         const custom = parseFloat(tr.querySelector('.customLinePrice').value)||0;
