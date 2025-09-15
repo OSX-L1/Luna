@@ -66,6 +66,8 @@
     </div>
   </div>
 </div>
+
+<!-- libs (โครงงานของคุณน่าจะมีอยู่ในหน้าอื่นๆ แล้ว) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -192,124 +194,29 @@ const ROLLER_GROUPS = [
     ]
   }
 ];
-function refreshRBPrices(){
-  const sel = document.getElementById('rbPrice');
-  sel.innerHTML = ROLLER_GROUPS.map((g,idx)=>`<option value="${g.price}" data-idx="${idx}">${g.group} – ${g.price} บาท</option>`).join('');
-}
-function formatMoney(num){ return (num||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
+function formatMoney(n){return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function refreshRBPrices(){const sel=document.getElementById('rbPrice'); sel.innerHTML=ROLLER_GROUPS.map((g,i)=>`<option value="${g.price}" data-idx="${i}">${g.group} – ${g.price} บาท</option>`).join('');}
 refreshRBPrices();
-const tbody = document.querySelector('#calcTable tbody');
-let rowCount=0;
-function newRow(){
-  if(rowCount>=100) return;
-  rowCount++;
-  const dlId='dl_codes_'+rowCount;
-  const tr=document.createElement('tr');
-  tr.innerHTML=`
-    <td>${rowCount}</td>
-    <td>
-      <input type="text" class="form-control form-control-sm code" list="${dlId}" placeholder="รหัสสินค้า (เลือก/พิมพ์เอง)">
-      <datalist id="${dlId}"></datalist>
-    </td>
-    <td>
-      <select class="form-select form-select-sm priceSel">${document.getElementById('rbPrice').innerHTML}</select>
-      <small class="text-secondary">หรือใช้ราคาอื่น: </small>
-      <input type="number" class="form-control form-control-sm mt-1 customLinePrice" placeholder="ราคาอื่น">
-    </td>
-    <td>
-      <select class="form-select form-select-sm sideSel">
-        <option value="ซ้าย">ปรับซ้าย</option>
-        <option value="ขวา">ปรับขวา</option>
-      </select>
-    </td>
-    <td><input type="number" class="form-control form-control-sm wVal" placeholder="เช่น 120"></td>
-    <td><input type="number" class="form-control form-control-sm hVal" placeholder="เช่น 200"></td>
-    <td><input type="number" class="form-control form-control-sm qtyVal" value="1" min="1"></td>
-    <td class="text-end fw-semibold lineTotal">0.00</td>`;
-  tbody.appendChild(tr);
-  const priceSel = tr.querySelector('.priceSel');
-  const dl = tr.querySelector('datalist');
-  const updateCodes = ()=>{
-    const idx = priceSel.selectedIndex;
-    const codes = ROLLER_GROUPS[idx]?.codes || [];
-    dl.innerHTML = codes.map(c=>`<option value="${c}"></option>`).join('');
-  };
-  priceSel.addEventListener('change', updateCodes);
-  updateCodes();
-}
-newRow();
-document.getElementById('addRow').addEventListener('click', newRow);
 
-function calcAll(){
-  let grand=0;
-  [...tbody.querySelectorAll('tr')].forEach(tr=>{
-    const w=(parseFloat(tr.querySelector('.wVal').value)||0)/100;
-    const h=(parseFloat(tr.querySelector('.hVal').value)||0)/100;
-    const qty=parseInt(tr.querySelector('.qtyVal').value)||0;
-    const sel=parseFloat(tr.querySelector('.priceSel').value)||0;
-    const custom=parseFloat(tr.querySelector('.customLinePrice').value)||0;
-    const price=custom>0?custom:sel;
-    const amount=w*h*1.2*price*qty;
-    tr.querySelector('.lineTotal').textContent=formatMoney(amount);
-    grand+=amount;
-  });
-  document.getElementById('grandTotal').textContent=formatMoney(grand);
-  return grand;
-}
-document.getElementById('calcBtn').addEventListener('click', calcAll);
+const tbody=document.querySelector('#calcTable tbody'); let rowCount=0;
+function newRow(){ if(rowCount>=100) return; rowCount++; const dlId='dl_codes_'+rowCount; const tr=document.createElement('tr'); tr.innerHTML=`
+  <td>${rowCount}</td>
+  <td><input type="text" class="form-control form-control-sm code" list="${dlId}" placeholder="รหัสสินค้า (เลือก/พิมพ์เอง)"><datalist id="${dlId}"></datalist></td>
+  <td><select class="form-select form-select-sm priceSel">${document.getElementById('rbPrice').innerHTML}</select><small class="text-secondary">หรือใช้ราคาอื่น: </small><input type="number" class="form-control form-control-sm mt-1 customLinePrice" placeholder="ราคาอื่น"></td>
+  <td><select class="form-select form-select-sm sideSel"><option value="ซ้าย">ปรับซ้าย</option><option value="ขวา">ปรับขวา</option></select></td>
+  <td><input type="number" class="form-control form-control-sm wVal" placeholder="เช่น 120"></td>
+  <td><input type="number" class="form-control form-control-sm hVal" placeholder="เช่น 200"></td>
+  <td><input type="number" class="form-control form-control-sm qtyVal" value="1" min="1"></td>
+  <td class="text-end fw-semibold lineTotal">0.00</td>`; tbody.appendChild(tr);
+  const priceSel=tr.querySelector('.priceSel'); const dl=tr.querySelector('datalist');
+  const update=()=>{ const idx=priceSel.selectedIndex; const codes=ROLLER_GROUPS[idx]?.codes||[]; dl.innerHTML=codes.map(c=>`<option value="${c}"></option>`).join(''); }; priceSel.addEventListener('change',update); update(); }
+newRow(); document.getElementById('addRow').addEventListener('click',newRow);
 
-const quoteModal = new bootstrap.Modal('#quoteModal');
-document.getElementById('pdfBtn').addEventListener('click', ()=>{
-  const grand=calcAll();
-  const rows=[...tbody.querySelectorAll('tr')].map((tr,i)=>({
-    index:i+1,
-    code:(tr.querySelector('.code').value||'-') + ' ('+(tr.querySelector('.sideSel').value||'-')+')',
-    w:(parseFloat(tr.querySelector('.wVal').value)||0)/100,
-    h:(parseFloat(tr.querySelector('.hVal').value)||0)/100,
-    qty:parseInt(tr.querySelector('.qtyVal').value)||0,
-    price:parseFloat(tr.querySelector('.customLinePrice').value)||parseFloat(tr.querySelector('.priceSel').value)||0,
-    total:parseFloat((tr.querySelector('.lineTotal').textContent||'0').replace(/,/g,''))||0
-  }))).filter(r=>r.qty>0 && r.w>0 && r.h>0);
-  const cm=v=>Math.round((v||0)*100);
-  const rowsHtml=rows.map(r=>`
-    <tr>
-      <td>${r.index}</td>
-      <td>${r.code}</td>
-      <td>${cm(r.w)} x ${cm(r.h)} ซม.</td>
-      <td class="text-center">${r.qty||1}</td>
-      <td class="text-end">${r.price.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-      <td class="text-end fw-semibold">${r.total.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-    </tr>`).join('');
-  const html = `
-    <div class="p-3">
-      <div class="mb-3">
-        <h4 class="fw-bold mb-1">ใบเสนอราคา - ม่านม้วน</h4>
-        <div class="text-secondary">${document.querySelector('#rbPrice option:checked')?.textContent||''}</div>
-      </div>
-      <div class="border rounded">
-        <table class="table m-0">
-          <thead class="table-light">
-            <tr><th>ลำดับ</th><th>รหัสสินค้า</th><th>ขนาดที่คำนวณ (กว้าง x สูง)</th><th class="text-center">จำนวนชุด</th><th class="text-end">ราคา/ตร.ม.</th><th class="text-end">ราคารวม</th></tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
-        <div class="p-3 text-end fw-bold">ยอดรวมสุทธิ: THB ${grand.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-      </div>
-    </div>`;
-  document.getElementById('quoteArea').innerHTML=html; quoteModal.show();
-});
+function calcAll(){ let grand=0; [...tbody.querySelectorAll('tr')].forEach(tr=>{ const w=(parseFloat(tr.querySelector('.wVal').value)||0)/100; const h=(parseFloat(tr.querySelector('.hVal').value)||0)/100; const qty=parseInt(tr.querySelector('.qtyVal').value)||0; const sel=parseFloat(tr.querySelector('.priceSel').value)||0; const custom=parseFloat(tr.querySelector('.customLinePrice').value)||0; const price=custom>0?custom:sel; const amt=w*h*1.2*price*qty; tr.querySelector('.lineTotal').textContent=formatMoney(amt); grand+=amt; }); document.getElementById('grandTotal').textContent=formatMoney(grand); return grand; }
+document.getElementById('calcBtn').addEventListener('click',calcAll);
 
-document.getElementById('captureImg').addEventListener('click', async ()=>{
-  const node=document.getElementById('quoteArea');
-  const canvas=await html2canvas(node,{scale:2,backgroundColor:'#ffffff'});
-  const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='ใบเสนอราคา-ม่านม้วน.png'; a.click();
-});
-document.getElementById('downloadPdf').addEventListener('click', ()=>{
-  const { jsPDF }=window.jspdf; const pdf=new jsPDF('p','mm','a4');
-  pdf.html(document.getElementById('quoteArea'),{callback:(d)=>d.save('ใบเสนอราคา-ม่านม้วน.pdf'),margin:[10,10,10,10],autoPaging:'text',html2canvas:{scale:0.7}});
-});
+const quoteModal=new bootstrap.Modal('#quoteModal');
+document.getElementById('pdfBtn').addEventListener('click',()=>{ const grand=calcAll(); const rows=[...tbody.querySelectorAll('tr')].map((tr,i)=>({index:i+1,code:(tr.querySelector('.code').value||'-')+' ('+(tr.querySelector('.sideSel').value||'-')+')',w:(parseFloat(tr.querySelector('.wVal').value)||0)/100,h:(parseFloat(tr.querySelector('.hVal').value)||0)/100,qty:parseInt(tr.querySelector('.qtyVal').value)||0,price:parseFloat(tr.querySelector('.customLinePrice').value)||parseFloat(tr.querySelector('.priceSel').value)||0,total:parseFloat((tr.querySelector('.lineTotal').textContent||'0').replace(/,/g,''))||0})).filter(r=>r.qty>0&&r.w>0&&r.h>0); const cm=v=>Math.round((v||0)*100); const rowsHtml=rows.map(r=>`<tr><td>${r.index}</td><td>${r.code}</td><td>${cm(r.w)} x ${cm(r.h)} ซม.</td><td class="text-center">${r.qty||1}</td><td class="text-end">${r.price.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="text-end fw-semibold">${r.total.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`).join(''); const html=`<div class="p-3"><div class="mb-3"><h4 class="fw-bold mb-1">ใบเสนอราคา - ม่านม้วน</h4><div class="text-secondary">${document.querySelector('#rbPrice option:checked')?.textContent||''}</div></div><div class="border rounded"><table class="table m-0"><thead class="table-light"><tr><th>ลำดับ</th><th>รหัสสินค้า</th><th>ขนาดที่คำนวณ (กว้าง x สูง)</th><th class="text-center">จำนวนชุด</th><th class="text-end">ราคา/ตร.ม.</th><th class="text-end">ราคารวม</th></tr></thead><tbody>${rowsHtml}</tbody></table><div class="p-3 text-end fw-bold">ยอดรวมสุทธิ: THB ${grand.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`; document.getElementById('quoteArea').innerHTML=html; quoteModal.show(); });
+document.getElementById('captureImg').addEventListener('click', async ()=>{ const c=await html2canvas(document.getElementById('quoteArea'),{scale:2,backgroundColor:'#fff'}); const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='ใบเสนอราคา-ม่านม้วน.png'; a.click(); });
+document.getElementById('downloadPdf').addEventListener('click',()=>{ const { jsPDF }=window.jspdf; const pdf=new jsPDF('p','mm','a4'); pdf.html(document.getElementById('quoteArea'),{callback:(d)=>d.save('ใบเสนอราคา-ม่านม้วน.pdf'),margin:[10,10,10,10],autoPaging:'text',html2canvas:{scale:0.7}}); });
 </script>
-
-</body>
-</html>
