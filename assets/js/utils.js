@@ -1,11 +1,11 @@
+// Money & quote renderer
 const formatMoney = (num) => (num||0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const renderQuoteTable = ({ title, subtitle, rows, grand }) => {
-  const cm = (v)=> Math.round((v||0)*100);
   const rowsHtml = rows.map(r=>`
     <tr>
       <td>${r.index}</td>
       <td>${r.code}</td>
-      <td>${cm(r.w)} x ${cm(r.h||r.hAdj||0)} ซม.</td>
+      <td>${(r.w||0).toFixed(2)} x ${(r.h||r.hAdj||0).toFixed(2)}</td>
       <td class="text-center">${r.qty||1}</td>
       <td class="text-end">${formatMoney(r.price||0)}</td>
       <td class="text-end fw-semibold">${formatMoney(r.total||0)}</td>
